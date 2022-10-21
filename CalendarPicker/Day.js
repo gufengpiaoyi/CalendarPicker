@@ -35,7 +35,8 @@ export default function Day(props) {
     disabledDatesTextStyle,
     minRangeDuration,
     maxRangeDuration,
-    enableDateChange
+    enableDateChange,
+    todayText,
   } = props;
 
   const thisDay = moment({year, month, day, hour: 12 });
@@ -135,7 +136,7 @@ export default function Day(props) {
         isThisDaySameAsSelectedStart)
     {
       computedSelectedDayStyle = styles.selectedDay;
-      selectedDayTextStyle = [styles.selectedDayLabel, isToday && todayTextStyle, propSelectedDayTextStyle];
+      selectedDayTextStyle = [isToday && todayTextStyle, styles.selectedDayLabel, propSelectedDayTextStyle];
       // selectedDayStyle prop overrides selectedDayColor (created via makeStyles)
       selectedDayStyle = propSelectedDayStyle || styles.selectedDayBackground;
     }
@@ -184,11 +185,9 @@ export default function Day(props) {
     if (dateOutOfRange) { // start or end date selected, and this date outside of range.
       return (
         <View style={[styles.dayWrapper, custom.containerStyle]}>
-          <View style={[custom.style, computedSelectedDayStyle, selectedDayStyle ]}>
+          <View style={custom.style}>
             <Text style={[styles.dayLabel, textStyle,
               styles.disabledText, disabledDatesTextStyle,
-              styles.selectedDisabledText, selectedDisabledDatesTextStyle,
-              overrideOutOfRangeTextStyle
             ]}>
               { day }
             </Text>
@@ -203,8 +202,13 @@ export default function Day(props) {
             style={[custom.style, computedSelectedDayStyle, selectedDayStyle ]}
             onPress={() => onPressDay({year, month, day}) }>
             <Text style={[styles.dayLabel, textStyle, custom.textStyle, selectedDayTextStyle]}>
-              { day }
+              { isToday ? (todayText || '今') : day }
             </Text>
+            {
+              (isToday && (!selectedStartDate || !today.isSame(selectedStartDate, 'day'))) ?  (
+                  <View style={{position: 'absolute',backgroundColor: '#32BAC0', width: 4, height: 4, bottom: 0, borderRadius: 2, alignSelf: 'center'}}/>
+              ) : null
+            }
           </TouchableOpacity>
         </View>
       );

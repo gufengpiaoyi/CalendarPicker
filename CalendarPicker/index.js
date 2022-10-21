@@ -232,6 +232,7 @@ export default class CalendarPicker extends Component {
       allowBackwardRangeSelect,
       enableDateChange,
       onDateChange,
+        isMonthMode
     } = this.props;
 
     if (!enableDateChange) {
@@ -266,6 +267,21 @@ export default class CalendarPicker extends Component {
         });
       }
     } else {
+      if(isMonthMode){
+        const start = this.getFirstDayOfWeek(new Date(date));
+        const end = this.getLastDayOfWeek(new Date(date));
+        const selectedStartDate = start;
+        const selectedEndDate = end;
+        this.setState({
+          selectedStartDate,
+          selectedEndDate,
+          renderMonthParams: this.createMonthProps({...this.state, selectedStartDate, selectedEndDate}),
+        }, () => {
+          // Sync start date with parent *after* state update.
+          onDateChange({start, end}, Utils.START_DATE);
+        });
+        return;
+      }
       const syncEndDate = !!prevSelectedEndDate;
       const selectedStartDate = date;
       const selectedEndDate = null;
@@ -282,6 +298,18 @@ export default class CalendarPicker extends Component {
         }
       });
     }
+  }
+
+  // 获取当前日期周一
+  getFirstDayOfWeek(date) {
+    const day = date.getDay() || 7;
+    return moment(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1 - day));
+  }
+
+  // 获取当前日期周日
+  getLastDayOfWeek(date) {
+    const day = date.getDay() || 7;
+    return moment(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 7 - day));
   }
 
   handleOnPressPrevious = () => {
@@ -393,6 +421,7 @@ export default class CalendarPicker extends Component {
       selectedRangeStyle: this.props.selectedRangeStyle,
       selectedRangeEndStyle: this.props.selectedRangeEndStyle,
       customDatesStyles: this.props.customDatesStyles,
+      todayText: this.props.todayText
     };
   }
 

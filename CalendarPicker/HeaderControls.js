@@ -63,6 +63,9 @@ export default function HeaderControls(props) {
             { monthName }
           </Text>
         </TouchableOpacity>
+        <Text style={[styles.yearHeaderMainText, textStyle, yearTitleStyle]}>
+          -
+        </Text>
         <TouchableOpacity onPress={onPressYear}>
           <Text style={[styles.yearHeaderMainText, textStyle, yearTitleStyle]}>
             { year }
