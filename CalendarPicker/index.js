@@ -340,6 +340,21 @@ export default class CalendarPicker extends Component {
     this.handleOnPressFinisher({year, month: nextMonth, scrollFinisher});
   }
 
+  handleOnPressToCurrentMonth = () => {
+    const { initialDate } = this.props;
+    let todayMonth = parseInt(moment(initialDate).month());
+    let today = parseInt(moment(initialDate).date());
+    let todayYear = parseInt(moment(initialDate).year());
+    const scrollFinisher = this.props.scrollable && this.scroller.scrollRight;
+    this.handleOnPressFinisher({year: todayYear, month: todayMonth, scrollFinisher});
+    this.setConnectedToBPXOne = setTimeout(
+        () => {
+          this.handleOnPressDay(todayYear,todayMonth, today)
+        },
+        100
+    );
+  }
+
   handleOnPressFinisher = ({year, month, scrollFinisher, extraState}) => {
     if (scrollFinisher) {
       scrollFinisher();
